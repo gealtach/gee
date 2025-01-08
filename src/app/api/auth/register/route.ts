@@ -31,10 +31,8 @@ export async function POST(request: NextRequest) {
                 passwdRecovery: "",
             }
         });
-        // Omit the password in the response without declaring it
-        const { password: _unused, ...user } = newUser;
         return NextResponse.json(
-            { message: "User created successfully", user },
+            { message: "User created successfully", newUser },
             { status: 201 }
         );
     } catch (error) {
