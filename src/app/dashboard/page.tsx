@@ -3,6 +3,7 @@
 import Register from '../components/register';
 import Logout from '../components/logout';
 import { useSession } from 'next-auth/react';
+import UserMenu from '../components/userMenu';
 
 function Page() {
   const { data: session } = useSession()
@@ -14,6 +15,7 @@ function Page() {
       {
         session?.user.role === '2' && <Register />
       }
+      <UserMenu />
     </div>
   )
 }
