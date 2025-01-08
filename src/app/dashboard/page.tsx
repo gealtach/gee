@@ -4,7 +4,7 @@ import Register from '../components/register';
 import Logout from '../components/logout';
 import { useSession } from 'next-auth/react';
 
-function page() {
+function Page() {
   const { data: session } = useSession()
   console.log(session?.user);
   
@@ -18,4 +18,4 @@ function page() {
   )
 }
 
-export default page
+export default Page

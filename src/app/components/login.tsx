@@ -22,7 +22,9 @@ function Login() {
                 setCredentialsError(false);
             }, 2000);
         }
-        res?.ok && navigator.push('/dashboard');
+        else{
+            navigator.push('/dashboard');
+        }
     })
   return (
     <div className='flex flex-col items-center gap-5 mt-10'>
