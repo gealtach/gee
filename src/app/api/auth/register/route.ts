@@ -31,10 +31,10 @@ export async function POST(request: NextRequest) {
                 passwdRecovery: "",
             }
         });
-        // Destructure the password without assigning it to a variable
-        const { password, ...user } = newUser;
+        // Omit the password in the response without declaring it
+        const { password: _unused, ...user } = newUser;
         return NextResponse.json(
-            { message: "User created successfully", user: user },
+            { message: "User created successfully", user },
             { status: 201 }
         );
     } catch (error) {
