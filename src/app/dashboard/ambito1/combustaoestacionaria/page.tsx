@@ -94,7 +94,7 @@ function Page() {
       kgN2O: 'N/A'
     },
     Madeira: {
-      unidade: "tons",
+      unidade: 'tons',
       kgCO2: 1.747,
       kgCH4: 0.000,
       kgN2O: 0.000
