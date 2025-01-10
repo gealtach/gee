@@ -109,7 +109,7 @@ function Page() {
   const combustivelSelecionado = watch('combustivel');
   const qtdSeccted : number = watch('qtd');
   const onSubmit = handleSubmit(async (data) =>{
-    console.log('olá');    
+    console.log(data);    
 });
 
   return (
