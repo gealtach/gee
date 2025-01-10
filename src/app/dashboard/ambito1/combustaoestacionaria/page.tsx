@@ -22,49 +22,49 @@ function Page() {
   const { register, handleSubmit, watch } = useForm();
   const combustivelData: CombustivelData = {
     Gasolina: {
-      unidade: "tons",
+      unidade: 'tons',
       kgCO2: 3.079,
       kgCH4: 0.00013,
       kgN2O: 0.00003
     },
     FueloleoPesado: {
-      unidade: "tons",
+      unidade: 'tons',
       kgCO2: 3.111,
       kgCH4: 0.000,
       kgN2O: 0.000
     },
     GPL: {
-      unidade: "tons",
+      unidade: 'tons',
       kgCO2: 2.003,
       kgCH4: 0.00004,
       kgN2O: 0.00019
     },
     GasNatural: {
-      unidade: "m3",
+      unidade: 'm3',
       kgCO2: 0.002,
       kgCH4: 0.000,
       kgN2O: 0.000
     },
     GasNaturalLiquefeito: {
-      unidade: "tons",
+      unidade: 'tons',
       kgCO2: 2.828,
       kgCH4: 0.0000,
       kgN2O: 0.0000
     },
     Diesel: {
-      unidade: "tons",
+      unidade: 'tons',
       kgCO2: 3.209,
       kgCH4: 0.0000,
       kgN2O: 0.0000
     },
     Biodiesel: {
-      unidade: "tons",
+      unidade: 'tons',
       kgCO2: 1.912,
       kgCH4: 0.0000,
       kgN2O: 0.0000
     },
     Biogasolina: {
-      unidade: "tons",
+      unidade: 'tons',
       kgCO2: 1.912,
       kgCH4: 0.0000,
       kgN2O: 0.0000
