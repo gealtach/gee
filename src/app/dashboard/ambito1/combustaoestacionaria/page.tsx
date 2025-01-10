@@ -17,7 +17,7 @@ interface CombustivelData {
   [key: string]: CombustivelValues;
 }
 
-function page() {
+function Page() {
   const navigator = useRouter();
   const { register, handleSubmit, watch } = useForm();
   const combustivelData: CombustivelData = {
@@ -108,7 +108,10 @@ function page() {
   };
   const combustivelSelecionado = watch('combustivel');
   const qtdSeccted : number = watch('qtd');
-  
+  const onSubmit = handleSubmit(async (data) =>{
+    console.log('olá');    
+});
+
   return (
     <div>
       <div onClick={()=>navigator.push('/dashboard')} className='flex flex-col w-fit items-center m-2 p-2 cursor-pointer rounded hover:bg-red-400'>
@@ -138,7 +141,7 @@ function page() {
         </div>
         <div>
           <h1>Tabela 1. Fontes Estacionárias de Combustão</h1>
-          <form>
+          <form onSubmit={onSubmit}>
             <Table>
               <TableHeader>
                 <TableColumn>Instalação</TableColumn>
@@ -251,4 +254,4 @@ function page() {
   )
 }
 
-export default page
+export default Page
