@@ -1,3 +1,5 @@
+'use client';
+
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 
@@ -20,7 +22,7 @@ function UserMenu() {
                     <ul className='p-2'>
                         <li onClick={()=>navigator.push('/dashboard/ambito1/combustaoestacionaria')} className='cursor-pointer hover:bg-slate-400 bg-blue-400 p-2'>Combustão estacionária</li>
                         <li className='cursor-pointer hover:bg-slate-400 bg-blue-400 p-2'>Combustão móvel</li>
-                        <li className='cursor-pointer hover:bg-slate-400 bg-blue-400 p-2'>Emissões fugitivas</li>
+                        <li onClick={()=>navigator.push('/dashboard/ambito1/emissoesfugitivas')} className='cursor-pointer hover:bg-slate-400 bg-blue-400 p-2'>Emissões fugitivas</li>
                         <li className='cursor-pointer hover:bg-slate-400 bg-blue-400 p-2'>Efluentes</li>
                     </ul>
                 }
