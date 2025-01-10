@@ -1,20 +1,28 @@
 'use client';
 
-import React from 'react'
+import React, { useState } from 'react'
+import { FaRegCircleCheck } from "react-icons/fa6";
 import { useForm } from 'react-hook-form';
 
 function Register() {
     const { register, handleSubmit } = useForm();
-        const onSubmit = handleSubmit(async (data) =>{
-            const res = await fetch('/api/auth/register',{
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers: { 'Content-Type': 'application/json' }
-            });
-            const resJson = await res.json();
-            console.log(resJson, 'ahora aqui');
-            //abrir mensagem success
-        })
+    const [success, setSuccess] = useState(false);
+    const onSubmit = handleSubmit(async (data) =>{
+        const res = await fetch('/api/auth/register',{
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        const resJson = await res.json();
+        console.log(resJson);
+        
+        if(resJson.message === "User created successfully"){
+            setSuccess(true);
+            setTimeout(()=>{
+                setSuccess(false);
+            },2000);
+        }
+    });
   return (
     <div className='flex flex-col items-center border border-black p-4 w-fit rounded-lg gap-5 mt-10'>
         <h1 className='text-2xl font-bold'>Register</h1>
@@ -49,6 +57,7 @@ function Register() {
             </div>
             <button className='p-2 bg-blue-500 rounded font-bold text-white mt-5'>Entrar</button>
         </form>
+        {success && <span className='text-green-500 flex gap-x-4'><FaRegCircleCheck size={30} /> User created successfuly</span>}
     </div>
   )
 }
