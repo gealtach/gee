@@ -32,6 +32,7 @@ model Projetos {
   createdAt DateTime @default(now())
   userId String
   user User @relation(fields: [userId], references: [id])
+  rows Rows[]
 }
 
 model Rows {
@@ -39,13 +40,15 @@ model Rows {
   instalacao String
   fonte String
   combustivel String
-  qtd Int
+  qtd String
   unidade String
   co2unidade String
   ch4unidade String
   n2ounidade String
-  co2ton String
-  ch4ton String
-  n2oton String
-  emissoestotais String
+  co2tons String
+  ch4tons String
+  n2otons String
+  totais String
+  projetoId String
+  projeto Projetos @relation(fields: [projetoId], references: [id])
 }

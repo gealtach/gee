@@ -6,6 +6,7 @@ import {  Table,  TableHeader,  TableBody,  TableColumn,  TableRow,  TableCell} 
 import { useForm } from 'react-hook-form';
 import { useSession } from 'next-auth/react';
 import CreateNewProject from './createNewProject';
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 interface CombustivelValues {
   unidade: string;
@@ -22,12 +23,39 @@ type Project = {
   name: string;
   type: string;
   userId: string;
+  rows: [];
 };
+type Rows = {
+  id: string;
+  instalacao: string;
+  fonte: string;
+  combustivel: string;
+  qtd: string;
+  unidade: string;
+  co2unidade: string;
+  ch4unidade: string;
+  n2ounidade: string;
+  co2tons: string;
+  ch4tons: string;
+  n2otons: string;
+  totais: string;
+  projectId: string;
+}
 
 function TablaCombustaonEstacionaria1() {
-  const { register, handleSubmit, watch } = useForm();
+  const { register, handleSubmit, watch, reset } = useForm({
+    defaultValues: {
+      instalacao: '',
+      denominacaoDaFonte: '',
+      combustivel: '',
+      qtd: 0,
+      projectSelect: '',
+    },
+  });
   const { data: session } = useSession();
   const [projects, setProjects] = useState<Project[]>([]);
+  const [rows, setRows] = useState<Rows[]>([]);
+  const [aux, setAux] = useState(false);
   const combustivelData: CombustivelData = {
     Gasolina: {
       unidade: 'tons',
@@ -115,10 +143,49 @@ function TablaCombustaonEstacionaria1() {
     },
   };
   const combustivelSelecionado = watch('combustivel');
+  const selectedProject = watch('projectSelect');
   const qtdSeccted : number = watch('qtd');
-  const onSubmit = handleSubmit(async (data) =>{
-    console.log(data);
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      const response = await fetch('/api/createRow', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          instalacao: data.instalacao,
+          fonte: data.denominacaoDaFonte,
+          combustivel: data.combustivel,
+          qtd: data.qtd,
+          unidade: combustivelData[data.combustivel].unidade,
+          co2unidade: combustivelData[data.combustivel].kgCO2,
+          ch4unidade: combustivelData[data.combustivel].kgCH4,
+          n2ounidade: combustivelData[data.combustivel].kgN2O,
+          projetoId: data.projectSelect,
+        }),
+      });
+  
+      if (response.ok) {
+        const res = await response.json();
+        console.log(res);
+  
+        // Limpia los campos del formulario
+        reset({
+          instalacao: '',
+          denominacaoDaFonte: '',
+          combustivel: '',
+          qtd: 0,
+          projectSelect: selectedProject,
+        });
+        setAux(!aux);
+      } else {
+        console.error('Error al guardar los datos:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error al procesar la solicitud:', error);
+    }
   });
+  
   
   useEffect(() => {
     const fetchData = async () => {
@@ -133,6 +200,18 @@ function TablaCombustaonEstacionaria1() {
     };
     fetchData();
   }, []);
+  useEffect(()=>{
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`/api/getRows?id=${selectedProject}`);
+        const data = await response.json();
+        setRows(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchData();
+  },[selectedProject, aux])
   
   return (
     <div>
@@ -141,7 +220,7 @@ function TablaCombustaonEstacionaria1() {
           <CreateNewProject />
           <form className='flex flex-col w-64'>
             <select {...register('projectSelect')} className='p-1 rounded-lg my-4'>
-              <option disabled >Select Project</option>
+              <option>Select Project</option>
               {projects?.map((project) => (
                 <option key={project.id} value={project.id}>
                 {project.name}
@@ -276,8 +355,27 @@ function TablaCombustaonEstacionaria1() {
                         : "0"
                     }
                   </TableCell>
-                  <TableCell><button><IoIosSave size={20} className='hover:text-green-500' /></button></TableCell>
+                  <TableCell><button disabled={selectedProject === 'Select Project'} className={`${selectedProject === 'Select Project' && 'cursor-not-allowed'}`}><IoIosSave size={20} className='hover:text-green-500' /></button></TableCell>
                 </TableRow>
+                <React.Fragment>
+                  {rows?.map((row) => (
+                    <TableRow className='hover:bg-blue-400' key={row.id}>
+                      <TableCell>{row.instalacao}</TableCell>
+                      <TableCell>{row.fonte}</TableCell>
+                      <TableCell>{row.combustivel}</TableCell>
+                      <TableCell>{row.qtd}</TableCell>
+                      <TableCell>{row.unidade}</TableCell>
+                      <TableCell>{row.co2unidade}</TableCell>
+                      <TableCell>{row.ch4unidade}</TableCell>
+                      <TableCell>{row.n2ounidade}</TableCell>
+                      <TableCell>{row.co2tons}</TableCell>
+                      <TableCell>{row.ch4tons}</TableCell>
+                      <TableCell>{row.n2otons}</TableCell>
+                      <TableCell>{row.totais}</TableCell>
+                      <TableCell className='text-red-600 cursor-pointer hover:bg-red-500 hover:rounded-full'><RiDeleteBin6Line size={20} /></TableCell>
+                    </TableRow>
+                  ))}
+                </React.Fragment>
               </TableBody>
             </Table>
           </form>

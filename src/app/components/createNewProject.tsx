@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { MdCreateNewFolder } from "react-icons/md";
 
 function CreateNewProject() {
-    const { register, handleSubmit, watch } = useForm();
+    const { register, handleSubmit } = useForm();
     const { data: session } = useSession();
     const newprojectSubmit = handleSubmit(async (data) =>{
         const response = await fetch('/api/createProject', {

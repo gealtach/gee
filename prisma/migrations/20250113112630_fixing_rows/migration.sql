@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Rows" ALTER COLUMN "qtd" SET DATA TYPE TEXT;

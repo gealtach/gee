@@ -6,15 +6,13 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
-    const type = searchParams.get('type');
-    if(id && type){
-      const projects = await prisma.projetos.findMany({
+    if(id){
+      const rows = await prisma.rows.findMany({
         where: {
-          userId: id,
-          type: type
+            projetoId: id,
         }
-      });
-      return NextResponse.json(projects, { status: 201 });
+      });      
+      return NextResponse.json(rows, { status: 201 });
     }
     else{
       return NextResponse.json(null);
