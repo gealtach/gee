@@ -1,9 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoIosSave } from "react-icons/io";
 import {  Table,  TableHeader,  TableBody,  TableColumn,  TableRow,  TableCell} from "@nextui-org/table";
 import { useForm } from 'react-hook-form';
+import { useSession } from 'next-auth/react';
+import CreateNewProject from './createNewProject';
 
 interface CombustivelValues {
   unidade: string;
@@ -15,9 +17,17 @@ interface CombustivelValues {
 interface CombustivelData {
   [key: string]: CombustivelValues;
 }
+type Project = {
+  id: string;
+  name: string;
+  type: string;
+  userId: string;
+};
 
 function TablaCombustaonEstacionaria1() {
   const { register, handleSubmit, watch } = useForm();
+  const { data: session } = useSession();
+  const [projects, setProjects] = useState<Project[]>([]);
   const combustivelData: CombustivelData = {
     Gasolina: {
       unidade: 'tons',
@@ -108,34 +118,64 @@ function TablaCombustaonEstacionaria1() {
   const qtdSeccted : number = watch('qtd');
   const onSubmit = handleSubmit(async (data) =>{
     console.log(data);
-});
-
+  });
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`/api/getProjects?id=${session?.user.id}&type=combustaoestacionaria`);
+        const data = await response.json();
+        setProjects(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, []);
+  
   return (
     <div>
       <div>
-        <div className='flex flex-col p-3'>
-          <h1 className='text-3xl'>Combustao estacionaria</h1>
-          <span className='font-bold'>Passo 1.    Indique o setor de atividade para o qual está a realizar o inventário</span>
-          <span className='text-xs'>
-            Para os cálculos de emissões de combustão estacionária, a escolha dos Fatores de Emissão depende do setor de atividade, por isso, o cálculo só é efetuado quando selecionado o
-            setor de atividade que mais se adequa às atividades da organização. 
-            Caso a organização atue em mais do que um setor, selecione aquele que melhor representa a atividade exercida pelas fontes de emissão estacionárias.
-            Caso existam diversas unidades de operação em setores muito distintos, utilize uma folha para cada unidade.
-          </span>
-          <span>Sector actividade: <span className='font-bold'>Manufatura ou Construção</span></span>
-          <span className='font-bold'>Passo 2.    Indique a quantidade total de combustível consumido para cada unidade, local, ou ponto (de acordo com o tipo de combustível) na Tabela 1.</span>
-          <span className='text-xs'>
-            - Selecione "Combustível usado" na caixa em baixo.  Indique a "Quantidade consumida" nas unidades corretas.
-            - As unidades corretas para a "Quantidade consumida" aparecem automaticamente na coluna "Unidades". Não altere tais unidades. Se necessário, converta o dado de
-            consumo para coincidir com as unidades apresentadas.
-            - Observe o exemplo na primeira linha de cada tabela (Itálico e vermelho). Não preencha essa linha.
-            - Para liberar mais linhas na Ferramenta clique no botão "+" à esquerda da tabela.
-          </span>
+        <div className='flex flex-col p-4'>
+          <CreateNewProject />
+          <form className='flex flex-col w-64'>
+            <select {...register('projectSelect')} className='p-1 rounded-lg my-4'>
+              <option disabled >Select Project</option>
+              {projects?.map((project) => (
+                <option key={project.id} value={project.id}>
+                {project.name}
+                </option>
+              ))}
+            </select>
+          </form>
+          <div>
+            <h1 className='text-3xl'>Combustao estacionaria</h1>
+            <span className='font-bold'>Passo 1.    Indique o setor de atividade para o qual está a realizar o inventário</span>
+            <br />
+            <span className='text-xs'>
+              Para os cálculos de emissões de combustão estacionária, a escolha dos Fatores de Emissão depende do setor de atividade, por isso, o cálculo só é efetuado quando selecionado o
+              setor de atividade que mais se adequa às atividades da organização. 
+              Caso a organização atue em mais do que um setor, selecione aquele que melhor representa a atividade exercida pelas fontes de emissão estacionárias.
+              Caso existam diversas unidades de operação em setores muito distintos, utilize uma folha para cada unidade.
+            </span>
+            <br />
+            <span>Sector actividade: <span className='font-bold'>Manufatura ou Construção</span></span><br />
+            <span className='font-bold'>Passo 2.    Indique a quantidade total de combustível consumido para cada unidade, local, ou ponto (de acordo com o tipo de combustível) na Tabela 1.</span>
+            <br />
+            <span className='text-xs'>
+              - Selecione "Combustível usado" na caixa em baixo.  Indique a "Quantidade consumida" nas unidades corretas.<br />
+              - As unidades corretas para a "Quantidade consumida" aparecem automaticamente na coluna "Unidades". Não altere tais unidades. Se necessário, converta o dado de
+              consumo para coincidir com as unidades apresentadas.<br />
+              - Observe o exemplo na primeira linha de cada tabela (Itálico e vermelho). Não preencha essa linha.<br />
+              - Para liberar mais linhas na Ferramenta clique no botão "+" à esquerda da tabela.
+            </span>
+          </div>
         </div>
-        <div>
-          <h1>Tabela 1. Fontes Estacionárias de Combustão</h1>
+        <div className='p-2'>
+          <h1 className='text-xl'>Tabela 1. Fontes Estacionárias de Combustão</h1>
           <form onSubmit={onSubmit}>
-            <Table>
+            <Table aria-label='combustaoEstacionaria'>
               <TableHeader>
                 <TableColumn>Instalação</TableColumn>
                 <TableColumn>Denominação da fonte</TableColumn>

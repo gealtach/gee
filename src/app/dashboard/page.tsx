@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import UserMenu from '../components/userMenu';
 
 function Page() {
-  const { data: session } = useSession()
+  const { data: session } = useSession();
   console.log(session?.user);
   
   return (
