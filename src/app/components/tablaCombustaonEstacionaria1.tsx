@@ -56,6 +56,10 @@ function TablaCombustaonEstacionaria1() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [rows, setRows] = useState<Rows[]>([]);
   const [aux, setAux] = useState(false);
+  const [reloadProjects, setReloadProjects] = useState(false);
+  const triggerReloadProjects = () => {
+    setReloadProjects(!reloadProjects);
+  };
   const combustivelData: CombustivelData = {
     Gasolina: {
       unidade: 'tons',
@@ -185,7 +189,23 @@ function TablaCombustaonEstacionaria1() {
       console.error('Error al procesar la solicitud:', error);
     }
   });
+  const deleteRow = async (id:string) => {
+    try {
+      const response = await fetch(`/api/deleteRow?id=${id}`, {
+        method: 'DELETE',
+      });
   
+      const result = await response.json();
+      if (result.success) {
+        console.log('Row deleted:', result.data);
+      } else {
+        console.error('Error:', result.error);
+      }
+      setAux(!aux);
+    } catch (error) {
+      console.error('Fetch error:', error);
+    }
+  }
   
   useEffect(() => {
     const fetchData = async () => {
@@ -199,7 +219,7 @@ function TablaCombustaonEstacionaria1() {
       }
     };
     fetchData();
-  }, []);
+  }, [reloadProjects]);
   useEffect(()=>{
     const fetchData = async () => {
       try {
@@ -217,7 +237,7 @@ function TablaCombustaonEstacionaria1() {
     <div>
       <div>
         <div className='flex flex-col p-4'>
-          <CreateNewProject />
+          <CreateNewProject onProjectCreated={triggerReloadProjects} />
           <form className='flex flex-col w-64'>
             <select {...register('projectSelect')} className='p-1 rounded-lg my-4'>
               <option>Select Project</option>
@@ -372,10 +392,55 @@ function TablaCombustaonEstacionaria1() {
                       <TableCell>{row.ch4tons}</TableCell>
                       <TableCell>{row.n2otons}</TableCell>
                       <TableCell>{row.totais}</TableCell>
-                      <TableCell className='text-red-600 cursor-pointer hover:bg-red-500 hover:rounded-full'><RiDeleteBin6Line size={20} /></TableCell>
+                      <TableCell onClick={()=> deleteRow(row.id)} className='text-red-600 cursor-pointer hover:bg-red-500 hover:rounded-full'>
+                        <RiDeleteBin6Line size={20} />
+                      </TableCell>
                     </TableRow>
                   ))}
                 </React.Fragment>
+                <TableRow>
+                  <TableCell> </TableCell>
+                  <TableCell> </TableCell>
+                  <TableCell> </TableCell>
+                  <TableCell> </TableCell>
+                  <TableCell> </TableCell>
+                  <TableCell> </TableCell>
+                  <TableCell> </TableCell>
+                  <TableCell className='font-bold bg-green-400'>Tota fóssil</TableCell>
+                  <TableCell className='bg-green-400'>
+                    {
+                      rows?.reduce((sum, row) => {
+                        const co2Value = parseFloat(row.co2tons);
+                        return !isNaN(co2Value) ? sum + co2Value : sum;
+                      }, 0).toFixed(3)
+                    }
+                  </TableCell>
+                  <TableCell className='bg-green-400'>
+                  {
+                      rows?.reduce((sum, row) => {
+                        const co2Value = parseFloat(row.ch4tons);
+                        return !isNaN(co2Value) ? sum + co2Value : sum;
+                      }, 0).toFixed(3)
+                    }
+                  </TableCell>
+                  <TableCell className='bg-green-400'>
+                  {
+                      rows?.reduce((sum, row) => {
+                        const co2Value = parseFloat(row.n2otons);
+                        return !isNaN(co2Value) ? sum + co2Value : sum;
+                      }, 0).toFixed(3)
+                    }
+                  </TableCell>
+                  <TableCell className='bg-green-400'>
+                  {
+                      rows?.reduce((sum, row) => {
+                        const co2Value = parseFloat(row.totais);
+                        return !isNaN(co2Value) ? sum + co2Value : sum;
+                      }, 0).toFixed(3)
+                    }
+                  </TableCell>
+                  <TableCell> </TableCell>
+                </TableRow>
               </TableBody>
             </Table>
           </form>
