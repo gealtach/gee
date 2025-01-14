@@ -5,15 +5,7 @@ export async function POST(request: NextRequest) {
   try {
     // Leer el cuerpo de la solicitud como JSON
     const body = await request.json();
-    console.log(body);
-    
-    // Validar que los campos requeridos existen
-    // if (!body.instalacao || !body.fonte || !body.combustivel || !body.qtd || !body.unidade || !body.co2unidade || !body.ch4unidade || !body.n2ounidade || !body.projetoId) {
-    //   return NextResponse.json(
-    //     { error: "Faltan campos obligatorios" },
-    //     { status: 400 }
-    //   );
-    // }
+   
     if(body.unidade === 'N/A' || body.co2unidade === 'N/A' || body.ch4unidade === 'N/A' || body.n2ounidade === 'N/A'){
         const newRow = await prisma.rows.create({
             data: {

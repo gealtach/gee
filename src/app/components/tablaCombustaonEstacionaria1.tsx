@@ -41,6 +41,15 @@ type Rows = {
   totais: string;
   projectId: string;
 }
+type Combustivel = {
+  id: string;
+  nome: string;
+  categoria: string;
+  unidade: string;
+  kgCO2: number;
+  kgCH4: number;
+  kgN2O: number;
+};
 
 function TablaCombustaonEstacionaria1() {
   const { register, handleSubmit, watch, reset } = useForm({
@@ -49,11 +58,10 @@ function TablaCombustaonEstacionaria1() {
   const { data: session } = useSession();
   const [projects, setProjects] = useState<Project[]>([]);
   const [rows, setRows] = useState<Rows[]>([]);
+  const [combustiveis, setCombustiveis] = useState<Combustivel[]>([]);
   const [aux, setAux] = useState(false);
   const [reloadProjects, setReloadProjects] = useState(false);
-  const triggerReloadProjects = () => {
-    setReloadProjects(!reloadProjects);
-  };
+  const triggerReloadProjects = () => { setReloadProjects(!reloadProjects) };
   const combustivelData: CombustivelData = {
     Gasolina: {
       unidade: 'tons',
@@ -145,6 +153,14 @@ function TablaCombustaonEstacionaria1() {
   const qtdSeccted : number = watch('qtd');
   const onSubmit = handleSubmit(async (data) => {
     try {
+      const selectedCombustivel = combustiveis.find(c => c.nome === data.combustivel);
+
+      if (!selectedCombustivel) {
+        console.error('Combustível selecionado não encontrado.');
+        return;
+      }
+      console.log(selectedCombustivel);
+      
       const response = await fetch('/api/createRow', {
         method: 'POST',
         headers: {
@@ -155,26 +171,16 @@ function TablaCombustaonEstacionaria1() {
           fonte: data.denominacaoDaFonte,
           combustivel: data.combustivel,
           qtd: data.qtd,
-          unidade: combustivelData[data.combustivel].unidade,
-          co2unidade: combustivelData[data.combustivel].kgCO2,
-          ch4unidade: combustivelData[data.combustivel].kgCH4,
-          n2ounidade: combustivelData[data.combustivel].kgN2O,
+          unidade: selectedCombustivel.unidade,
+          co2unidade: selectedCombustivel.kgCO2,
+          ch4unidade: selectedCombustivel.kgCH4,
+          n2ounidade: selectedCombustivel.kgN2O,
           projetoId: data.projectSelect,
         }),
       });
-  
+
       if (response.ok) {
-        const res = await response.json();
-        console.log(res);
-  
-        // Limpia los campos del formulario
-        reset({
-          instalacao: '',
-          denominacaoDaFonte: '',
-          combustivel: '',
-          qtd: 0,
-          projectSelect: selectedProject,
-        });
+        reset({ instalacao: '', denominacaoDaFonte: '', combustivel: '', qtd: 0, projectSelect: selectedProject });
         setAux(!aux);
       } else {
         console.error('Error al guardar los datos:', response.statusText);
@@ -200,7 +206,19 @@ function TablaCombustaonEstacionaria1() {
       console.error('Fetch error:', error);
     }
   }
-  
+
+  useEffect(() => {
+    const fetchCombustiveis = async () => {
+      try {
+        const response = await fetch(`/api/getCombustivels?categoria=combustaoestacionaria`);
+        const data: Combustivel[] = await response.json();
+        setCombustiveis(data);
+      } catch (error) {
+        console.error('Error fetching combustíveis:', error);
+      }
+    };
+    fetchCombustiveis();
+  }, []);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -233,7 +251,7 @@ function TablaCombustaonEstacionaria1() {
         <div className='flex flex-col p-4'>
           <CreateNewProject onProjectCreated={triggerReloadProjects} />
           <form className='flex flex-col w-64'>
-            <select {...register('projectSelect')} className='p-1 rounded-lg my-4'>
+            <select {...register('projectSelect', {required: true})} className='p-1 rounded-lg my-4'>
               <option>Select Project</option>
               {projects?.map((project) => (
                 <option key={project.id} value={project.id}>
@@ -292,20 +310,11 @@ function TablaCombustaonEstacionaria1() {
                   <TableCell>
                     <select {...(register('combustivel', { required: true }))} className='w-20'>
                       <option value="">Selecione Combustível</option>
-                      <option value="Gasolina">Combustível para Motor (Gasolina)</option>
-                      <option value="FueloleoPesado">Fuelóleo Pesado</option>
-                      <option value="GPL">Gás de Petróleo Liquefeito (GPL)</option>
-                      <option value="GasNatural">Gás Natural</option>
-                      <option value="GasNaturalLiquefeito">Gás Natural Liquefeito</option>
-                      <option value="Diesel">Diesel</option>
-                      <option value="Biodiesel">Biodiesel</option>
-                      <option value="Biogasolina">Biogasolina</option>
-                      <option value="CarvaoVegetal">Carvão Vegetal</option>
-                      <option value="GasesAterro">Gases de Aterro</option>
-                      <option value="GasesLamasDep">Gases de Lamas de Depuração</option>
-                      <option value="LicorNegro">Licor Negro</option>
-                      <option value="Madeira">Madeira / resíduos de Madeira</option>
-                      <option value="Turfa">Turfa</option>
+                      {
+                        combustiveis?.map((combustivel)=>(
+                          <option key={combustivel.id} value={combustivel.nome}>{combustivel.nome}</option>
+                        ))
+                      }
                     </select>
                   </TableCell>
                   <TableCell><input {...(register('qtd', { required: true }))} type="text" placeholder='Qtd.' className="w-10" /></TableCell>

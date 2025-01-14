@@ -37,14 +37,7 @@ function CombustivelList() {
           }
     }
     const { register, handleSubmit, reset } = useForm({
-            defaultValues: {
-                nome: '',
-                unidade: '',
-                kgCO2: '',
-                kgCH4: '',
-                kgN2O: '',
-                categoria: '',
-              }
+            defaultValues: { nome: '', unidade: '', kgCO2: '', kgCH4: '', kgN2O: '', categoria: '' }
         });
         const onSubmit = handleSubmit(async (data) =>{
             const res = await fetch('/api/createCombustivelData',{
@@ -53,14 +46,7 @@ function CombustivelList() {
                 headers: { 'Content-Type': 'application/json' }
             });        
             if(res.status === 201){
-                reset({
-                    nome: '',
-                    unidade: '',
-                    kgCO2: '',
-                    kgCH4: '',
-                    kgN2O: '',
-                    categoria: '',
-                  });
+                reset({ nome: '', unidade: '', kgCO2: '', kgCH4: '', kgN2O: '', categoria: '' });
             }
             setAux(!aux);
         });
@@ -76,7 +62,7 @@ function CombustivelList() {
     <div className='flex flex-col items-center border border-black p-4 w-fit rounded-lg gap-5 mt-10'>
         <h1 className='text-2xl font-bold'>CombustivelList</h1>
         <form onSubmit={onSubmit}>
-            <Table>
+            <Table  aria-label='cumbustivels'>
                 <TableHeader>
                     <TableColumn>Nome</TableColumn>
                     <TableColumn>Unidade</TableColumn>
@@ -121,8 +107,8 @@ function CombustivelList() {
                         </TableCell>
                         <TableCell>
                             <select className='p-1 rounded border border-black' {...register('categoria', { required:true })}>
-                                <option value="combustaoe stacionaria">Combustão estacionária</option>
-                                <option value="combustao movel">Combustão móvel</option>
+                                <option value="combustaoestacionaria">Combustão estacionária</option>
+                                <option value="combustaomovel">Combustão móvel</option>
                             </select>
                         </TableCell>
                         <TableCell><button><IoIosSave size={20} /></button></TableCell>
