@@ -44,13 +44,7 @@ type Rows = {
 
 function TablaCombustaonEstacionaria1() {
   const { register, handleSubmit, watch, reset } = useForm({
-    defaultValues: {
-      instalacao: '',
-      denominacaoDaFonte: '',
-      combustivel: '',
-      qtd: 0,
-      projectSelect: '',
-    },
+    defaultValues: { instalacao: '', denominacaoDaFonte: '', combustivel: '', qtd: 0, projectSelect: '' },
   });
   const { data: session } = useSession();
   const [projects, setProjects] = useState<Project[]>([]);

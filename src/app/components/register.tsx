@@ -14,7 +14,6 @@ function Register() {
             headers: { 'Content-Type': 'application/json' }
         });
         const resJson = await res.json();
-        console.log(resJson);
         
         if(resJson.message === "User created successfully"){
             setSuccess(true);

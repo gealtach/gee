@@ -52,3 +52,13 @@ model Rows {
   projetoId String
   projeto Projetos @relation(fields: [projetoId], references: [id])
 }
+
+model CombustivelData {
+  id String @id @default(uuid())
+  nome String
+  unidade String
+  kgCO2 String
+  kgCH4 String
+  kgN2O String 
+  categoria String
+}
