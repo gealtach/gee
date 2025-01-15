@@ -1,6 +1,7 @@
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/table';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { IoIosSave } from 'react-icons/io';
 
 type Rows = {
   id: string;
@@ -132,13 +133,16 @@ function Combustaoestacionaria2() {
           {renderRows(filteredRowsBiomassa, 'biomassa')}
         </TableBody>
       </Table>
-      <div>
-        <div className='bg-blue-400'>
-          <h1 className='text-lg font-bold'>Emissões totais em CO2 equivalente (toneladas) {(totalsFosseis.totalCO2e).toFixed(3)}</h1>
+      <div className='flex'>
+        <div className='m-2 border border-black flex flex-col w-fit gap-1'>
+          <div className='bg-blue-400 px-4 py-2'>
+            <h1 className='text-lg font-bold'>Emissões totais em CO2 equivalente (toneladas) {(totalsFosseis.totalCO2e).toFixed(3)}</h1>
+          </div>
+          <div className='bg-green-400 px-4 py-2'>
+            <h1 className='text-lg font-bold'>Emissões totais em CO2 equivalente (toneladas) {(totalsBiomassa.totalCO2e).toFixed(3)}</h1>
+          </div>
         </div>
-        <div className='bg-green-400'>
-          <h1 className='text-lg font-bold'>Emissões totais em CO2 equivalente (toneladas) {(totalsBiomassa.totalCO2e).toFixed(3)}</h1>
-        </div>
+        <button onClick={() => alert('save')}><IoIosSave size={50} /></button>
       </div>
     </div>
   );
