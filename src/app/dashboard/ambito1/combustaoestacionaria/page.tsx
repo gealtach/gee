@@ -1,5 +1,6 @@
 'use client';
 
+import Combustaoestacionaria2 from '@/app/components/tablaCombustaoestacionaria2';
 import TablaCombustaonEstacionaria1 from '@/app/components/tablaCombustaonEstacionaria1';
 import { useRouter } from 'next/navigation';
 import React from 'react';
@@ -15,6 +16,7 @@ function Page() {
         <span className='text-xs'>dashboard</span>
       </div>
       <TablaCombustaonEstacionaria1 />
+      <Combustaoestacionaria2 />
     </div>
   )
 }

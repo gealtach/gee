@@ -62,3 +62,14 @@ model CombustivelData {
   kgN2O String 
   categoria String
 }
+
+model RowCombEst2 {
+  id String @id @default(uuid())
+  ref String
+  combustivel String
+  unidade String
+  CO2 String
+  CH4 String
+  N2O String
+  type String
+}
