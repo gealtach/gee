@@ -73,3 +73,12 @@ model RowCombEst2 {
   N2O String
   type String
 }
+
+model DataCombMovel {
+  id String @id @default(uuid())
+  combustivel String
+  unidade String
+  kgCO2 String
+  kgCH4 String
+  kgN2O String
+}

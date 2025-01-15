@@ -7,6 +7,7 @@ import UserMenu from '../components/userMenu';
 import UsersList from '../components/usersList';
 import CombustivelList from '../components/combustivelList';
 import DataCombEstacionaria2 from '../components/dataCombEstacionaria2';
+import DataCombMovel from '../components/dataCombMovel';
 
 function Page() {
   const { data: session } = useSession();  
@@ -16,6 +17,7 @@ function Page() {
       {
         session?.user.role === '2' && 
         <div className='flex flex-wrap p-4 gap-4'>
+          <DataCombMovel />
           <DataCombEstacionaria2 />
           <Register />
           <UsersList />
